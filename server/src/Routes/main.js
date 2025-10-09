@@ -4,7 +4,7 @@ const login = require("./Login");
 const details = require("./BillingDetails");
 const books = require("./BestBooks");
 const wishlist = require("./WishList");
-const accountRouter = require("./account");
+const accountRouter = require("./Account");
 const ShippingAddress = require("./ShippingAddress");
 
 index.use("/login",login);  
