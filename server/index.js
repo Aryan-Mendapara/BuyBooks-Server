@@ -13,11 +13,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173", 
+  origin: [    
+          "http://localhost:5173", 
           // "http://localhost:5174",
-          "https://buy-books-twpo.vercel.app"
-          // "https://buybooks-server.onrender.com"
+          "https://buy-books-twpo.vercel.app"          
         ], // React frontend
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 }));
