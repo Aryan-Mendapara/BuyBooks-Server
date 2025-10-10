@@ -18,7 +18,6 @@ app.use(cors({
           // "http://localhost:5174",
           "https://buy-books-twpo.vercel.app"          
         ], // React frontend
-  credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 }));
 
