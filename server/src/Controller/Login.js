@@ -5,13 +5,15 @@ const sendEmail = require("../Models/sendMail");
 const addLogin = async (req, res) => {
  try {
     const { email, mobileno } = req.body;
+console.log("Request Body:", req.body);
+ console.log("Email:", email, "Mobile No:", mobileno);
 
     if (!email || !mobileno) {
       return res.status(400).json({ message: "Email and Mobile are required" });
     }
 
     let user = await Login.findOne({ email });
-
+    console.log("Found User:", user);
     if (!user) {
       // Auto create user with random password
       // const randomPassword = crypto.randomBytes(6).toString("hex");
@@ -24,15 +26,20 @@ const addLogin = async (req, res) => {
       });
       await user.save();
     }
+    console.log("User after creation:", user);
+    
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.otp = otp;
     user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 min
     await user.save();
+    console.log("Generated OTP:", otp);
 
     // Send OTP to email
     await sendEmail(email, otp);
+    console.log("OTP sent to email:", sendEmail);
+          
 
     return res.status(200).json({ message: "OTP sent to email" });
 
