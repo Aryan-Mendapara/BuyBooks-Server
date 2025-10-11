@@ -14,7 +14,7 @@ app.use(cors({
     "https://buy-books-twpo.vercel.app"
   ], // React frontend
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  credentials: true,
+  // credentials: true,
 }));
 
 app.use(express.json());
