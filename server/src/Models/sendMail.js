@@ -49,7 +49,7 @@ const sendEmail = async (to, otp) => {
 
   } catch (err) {
     console.error("Failed to send OTP email:", err.message);
-    throw new Error("Failed to send OTP email"); // so backend knows
+    throw new Error("Failed to otp send email"); // so backend knows
   }
 };
 

@@ -56,9 +56,6 @@ const addLogin = async (req, res) => {
   }
 };
 
-
-
-
 const getLogin = async (req, res) => {
   try {
     const user = await Login.find()
