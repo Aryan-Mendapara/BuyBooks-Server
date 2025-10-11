@@ -3,10 +3,11 @@ const Login = require("../Models/Login");
 const sendEmail = require("../Models/sendMail");
 
 const addLogin = async (req, res) => {
- try {
+  try {
+    console.log("backend");
     const { email, mobileno } = req.body;
-console.log("Request Body:", req.body);
- console.log("Email:", email, "Mobile No:", mobileno);
+    console.log("Request Body:", req.body);
+    console.log("Email:", email, "Mobile No:", mobileno);
 
     if (!email || !mobileno) {
       return res.status(400).json({ message: "Email and Mobile are required" });
@@ -27,7 +28,7 @@ console.log("Request Body:", req.body);
       await user.save();
     }
     console.log("User after creation:", user);
-    
+
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -39,7 +40,7 @@ console.log("Request Body:", req.body);
     // Send OTP to email
     await sendEmail(email, otp);
     console.log("OTP sent to email:", sendEmail);
-          
+
 
     return res.status(200).json({ message: "OTP sent to email" });
 
@@ -50,8 +51,8 @@ console.log("Request Body:", req.body);
 };
 
 const getLogin = async (req, res) => {
-  try {    
-    const user = await Login.find()    
+  try {
+    const user = await Login.find()
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
