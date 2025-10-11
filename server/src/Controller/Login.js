@@ -4,52 +4,60 @@ const sendEmail = require("../Models/sendMail");
 
 const addLogin = async (req, res) => {
   try {
-    console.log("Bakend addLogin called");
-
+    console.log("Backend addLogin called");
     const { email, mobileno } = req.body;
     console.log("Request Body:", req.body);
-    console.log("Email:", email, "Mobile No:", mobileno);
 
     if (!email || !mobileno) {
       return res.status(400).json({ message: "Email and Mobile are required" });
     }
 
+    // Convert mobile number to number if needed
+    const mobileNum = Number(mobileno);
+    if (isNaN(mobileNum)) {
+      return res.status(400).json({ message: "Invalid mobile number" });
+    }
+
     let user = await Login.findOne({ email });
     console.log("Found User:", user);
-    if (!user) {
-      // Auto create user with random password
-      // const randomPassword = crypto.randomBytes(6).toString("hex");
-      // const hashedPassword = await bcrypt.hash(Password, 10);
 
+    if (!user) {
+      // Auto-create user
       user = new Login({
         email,
-        mobileno,
-        // password: hashedPassword
+        mobileno: mobileNum,
+        password: null, // or generate random hashed password if needed
       });
       await user.save();
+      console.log("User created:", user);
     }
-    console.log("User after creation:", user);
-
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.otp = otp;
-    user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 min
+    user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes
     await user.save();
     console.log("Generated OTP:", otp);
 
-    // Send OTP to email
-    await sendEmail(email, otp);
-    console.log("OTP sent to email:", sendEmail);
+    // Send OTP email safely
+    try {
+      await sendEmail(email, otp);
+      console.log("OTP sent to email");
+    } catch (emailErr) {
+      console.error("Failed to send OTP email:", emailErr.message);
+      return res.status(500).json({ message: "Failed to send OTP email" });
+    }
 
-
-    return res.status(200).json({ message: "OTP sent to email" });
+    return res.status(200).json({ message: "OTP sent successfully to email" });
 
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
 
 const getLogin = async (req, res) => {
   try {
