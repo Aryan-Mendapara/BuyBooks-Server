@@ -12,9 +12,9 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://buy-books-twpo.vercel.app"
-  ], // React frontend
+  ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  // credentials: true,
+  allowedHeaders: ["Content-Type","Authorization"],
 }));
 
 app.use(express.json());
