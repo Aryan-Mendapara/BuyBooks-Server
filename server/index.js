@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use("/books", router);
+app.use("/books/login", router);
 
 dbConnection();
 app.listen(port, () => {
