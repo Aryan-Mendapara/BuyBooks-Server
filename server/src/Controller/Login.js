@@ -38,10 +38,11 @@ const addLogin = async (req, res) => {
     user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes
     await user.save();
     console.log("Generated OTP:", otp);
+    return res.status(200).json({ message: "OTP generated", otp }); 
 
     // Send OTP email safely
     try {
-      await sendEmail(email, otp);z
+      await sendEmail(email, otp); z
       console.log("OTP sent to email");
     } catch (emailErr) {
       console.error("Failed to send OTP email:", emailErr.message);
