@@ -1,41 +1,23 @@
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (to, otp) => {
-  console.log('send Email');
-
-  const from = process.env.EMAIL;
-  const pass = process.env.EMAIL_PASS;
-
-  // If email creds aren't set, log the OTP for dev/testing and skip SMTP send
-  if (!from || !pass) {
-    console.warn('EMAIL or EMAIL_PASS not set. Skipping real email send.');
-    console.info(`OTP for ${to}: ${otp}`);
-    return;
-  }
-
+  console.log("send Email");  
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: from,
-      pass: pass, // should be an App Password if using Gmail with 2FA
-    },
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASS
+    }
   });
 
   const mailOptions = {
-    from,
+    from: process.env.EMAIL,
     to,
-    subject: 'Your Login OTP',
-    text: `Your OTP is: ${otp}`,
+    subject: "Your Login OTP",
+    text: `Your OTP is: ${otp}`
   };
 
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent:', info && info.response ? info.response : info);
-  } catch (err) {
-    console.error('Failed to send OTP email:', err && err.message ? err.message : err);
-    // Rethrow so callers can respond appropriately
-    throw err;
-  }
+  await transporter.sendMail(mailOptions);
 };
 
 module.exports = sendEmail;

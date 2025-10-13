@@ -1,4 +1,3 @@
-require('dotenv').config(); // load env variables
 const bcrypt = require("bcrypt");
 const Login = require("../Models/Login");
 const sendEmail = require("../Models/sendMail");
@@ -38,21 +37,15 @@ const addLogin = async (req, res) => {
     user.otp = otp;
     user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes
     await user.save();
-    console.log("Generated OTP:", otp);
+    console.log("Generated OTP:", otp);    
 
-    // Send OTP email
+    // Send OTP email safely
     try {
-      await sendEmail(email, otp);
-      console.log('OTP sent to email');
+      await sendEmail(email, otp); z
+      console.log("OTP sent to email");
     } catch (emailErr) {
-      // Log detailed error
-      console.error('Failed to send OTP email:', emailErr && emailErr.message ? emailErr.message : emailErr);
-      // If email env not configured, return success but notify it's only logged on server
-      if (!process.env.EMAIL || !process.env.EMAIL_PASS) {
-        console.warn('Email credentials not configured; OTP was logged on server instead of sent.');
-        return res.status(200).json({ message: 'OTP generated (email not configured; check server logs)' });
-      }
-      return res.status(500).json({ message: 'Failed to send OTP email' });
+      console.error("Failed to send OTP email:", emailErr.message);
+      return res.status(500).json({ message: "Failed to send OTP email" });
     }
 
     return res.status(200).json({ message: "OTP sent successfully to email" });
@@ -65,10 +58,11 @@ const addLogin = async (req, res) => {
 
 const getLogin = async (req, res) => {
   try {
-    const user = await Login.find();
+    const user = await Login.find()
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
     res.status(200).json({ message: "User fetched successfully", user });
   } catch (error) {
     console.error("Get Login User Error:", error);
@@ -83,8 +77,8 @@ const deleteLogin = async (req, res) => {
       return res.status(404).json({ message: "User Not Found" });
     res.status(200).json({ message: "Login deleted successfully" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
+    console.log(error);
   }
 }
 
