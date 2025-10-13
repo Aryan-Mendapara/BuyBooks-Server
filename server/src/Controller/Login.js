@@ -44,7 +44,13 @@ const addLogin = async (req, res) => {
       await sendEmail(email, otp);
       console.log("OTP sent to email");
     } catch (emailErr) {
-      console.error("Failed to send OTP email:", emailErr.message);
+      // Improve error detail for logs and return a clearer message to client
+      console.error("Failed to send OTP email:", emailErr && emailErr.message ? emailErr.message : emailErr);
+      // If email env not configured, send success but indicate email skipped
+      if (!process.env.EMAIL || !process.env.EMAIL_PASS) {
+        console.warn('Email credentials not configured; returning success but OTP was only logged on server.');
+        return res.status(200).json({ message: "OTP generated (email not configured; check server logs)" });
+      }
       return res.status(500).json({ message: "Failed to send OTP email" });
     }
 

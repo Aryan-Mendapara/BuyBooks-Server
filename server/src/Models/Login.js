@@ -11,7 +11,9 @@ const LoginSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        require: true
+        // make optional for OTP-based accounts; default empty string to satisfy older code
+        required: false,
+        default: ''
     },
     otp: {
         type: String,
