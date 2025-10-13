@@ -37,8 +37,7 @@ const addLogin = async (req, res) => {
     user.otp = otp;
     user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes
     await user.save();
-    console.log("Generated OTP:", otp);
-    return res.status(200).json({ message: "OTP generated", otp }); 
+    console.log("Generated OTP:", otp);    
 
     // Send OTP email safely
     try {
