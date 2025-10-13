@@ -4,7 +4,6 @@ const dbConnection = require("./src/DBConnection/Connection.js");
 const index = require('./src/Routes/main.js');
 const cors = require("cors");
 const path = require('path');
-const router = require('./src/Routes/Login.js');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -26,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use("/books/login", router);
+app.use("/books", index);
 
 dbConnection();
 app.listen(port, () => {
