@@ -30,12 +30,15 @@ const sendEmail = async (to, otp) => {
 
   try {
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASS, // Must be App Password if 2FA enabled
-      }
-    });
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
 
     const mailOptions = {
       from: process.env.EMAIL,
