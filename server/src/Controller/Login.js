@@ -12,39 +12,34 @@ const addLogin = async (req, res) => {
       return res.status(400).json({ message: "Email and Mobile are required" });
     }
 
-    // Convert mobile number to number if needed
     const mobileNum = Number(mobileno);
     if (isNaN(mobileNum)) {
       return res.status(400).json({ message: "Invalid mobile number" });
     }
 
     let user = await Login.findOne({ email });
-    console.log("Found User:", user);
-
     if (!user) {
-      // Auto-create user
       user = new Login({
         email,
         mobileno: mobileNum,
-        password: null, // or generate random hashed password if needed
+        password: null,
       });
       await user.save();
-      console.log("User created:", user);
     }
 
-    // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.otp = otp;
-    user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes
+    user.otpExpires = Date.now() + 5 * 60 * 1000;
     await user.save();
-    console.log("Generated OTP:", otp);    
 
-    // Send OTP email safely
+    console.log("Generated OTP:", otp);
+
+    // ✅ Send OTP email
     try {
-      await sendEmail(email, otp); z
-      console.log("OTP sent to email");
+      await sendEmail(email, otp);
+      console.log("✅ OTP sent to email");
     } catch (emailErr) {
-      console.error("Failed to send OTP email:", emailErr.message);
+      console.error("❌ Failed to send OTP email:", emailErr.message);
       return res.status(500).json({ message: "Failed to send OTP email" });
     }
 
@@ -55,6 +50,9 @@ const addLogin = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+// module.exports = { addLogin };
+
 
 const getLogin = async (req, res) => {
   try {
