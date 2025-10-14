@@ -5,14 +5,18 @@ const sendEmail = async (to, otp) => {
 
   try {
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,  // smtp.gmail.com
-      port: process.env.EMAIL_PORT || 465,
-      secure: true, // Gmail uses SSL
+      host: "smtp-relay.brevo.com", // use Brevo SMTP directly
+      port: 587,                    // Brevo TLS port
+      secure: false,                // use TLS
       auth: {
-        user: process.env.EMAIL,
+        user: process.env.EMAIL,    // your full Brevo login email
         pass: process.env.EMAIL_PASS,
       },
+      tls: {
+        rejectUnauthorized: false,  // helps on Render or restricted networks
+      },
     });
+
 
     const mailOptions = {
       from: process.env.EMAIL,
