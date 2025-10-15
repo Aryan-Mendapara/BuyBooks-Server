@@ -41,14 +41,16 @@ const addLogin = async (req, res) => {
 
     // Send OTP email safely
     try {
-      await sendEmail(email, otp); 
-      console.log("OTP sent to email");
+      await sendEmail(email, otp);
+      console.log('OTP sent to email');
+      return res.status(200).json({ message: 'OTP sent successfully to email', emailSent: true });
     } catch (emailErr) {
-      console.error("Failed to send OTP email:", emailErr.message);
-      return res.status(500).json({ message: "Failed to send OTP email" });
+      // Log detailed error for server-side debugging
+      console.error('Failed to send OTP email:', emailErr && emailErr.message ? emailErr.message : emailErr);
+      // Do not treat email delivery failure as a hard server error for the login flow.
+      // Return a success-style response indicating OTP is generated but email delivery failed.
+      return res.status(200).json({ message: 'OTP generated but email delivery failed; check server logs', emailSent: false });
     }
-
-    return res.status(200).json({ message: "OTP sent successfully to email" });
 
   } catch (err) {
     console.error("Login error:", err);
