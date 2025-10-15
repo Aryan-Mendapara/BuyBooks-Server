@@ -12,7 +12,7 @@ app.use(cors({
   origin: ["http://localhost:5173", 
             "https://buybooks-client.vercel.app",
             "https://buy-books-twpo.vercel.app"
-          ], 
+          ], // allowed origins
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
