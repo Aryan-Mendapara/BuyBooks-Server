@@ -1,15 +1,10 @@
-// src/Models/sendMail.js
-require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 const sendEmail = async (to, otp) => {
-  console.log("Sending OTP email to:", to);
-
+  console.log("📨 Sending email...");
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true, // use SSL
+      service: "gmail",
       auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAIL_PASS,
@@ -17,18 +12,17 @@ const sendEmail = async (to, otp) => {
     });
 
     const mailOptions = {
-      from: `"BuyBooks 📚" <${process.env.EMAIL}>`,
+      from: process.env.EMAIL,
       to,
-      subject: "Your BuyBooks OTP",
-      text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
-      html: `<p>Your OTP for BuyBooks login is <b>${otp}</b>. It will expire in 5 minutes.</p>`,
+      subject: "Your Login OTP",
+      text: `Your OTP is ${otp}`,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("✅ OTP Email sent successfully");
-  } catch (error) {
-    console.error("❌ Failed to send OTP email:", error);
-    throw new Error("Failed to send OTP email");
+    console.log("✅ Email sent successfully");
+  } catch (err) {
+    console.error("❌ Failed to send OTP email:", err);
+    throw new Error("Email send failed");
   }
 };
 
