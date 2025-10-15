@@ -30,18 +30,12 @@ const sendEmail = async (to, otp) => {
 
   try {
     const transporter = nodemailer.createTransport({
-  service: 'gmail',  // You can keep this, or use explicit:
-  // host: 'smtp.gmail.com',
-  // port: 587,
-  // secure: false,  // Use true if you're on port 465
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false  // Helpful for testing, but remove in production
-  }
-});
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASS, // Must be App Password if 2FA enabled
+      }
+    });
 
     const mailOptions = {
       from: process.env.EMAIL,
