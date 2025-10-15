@@ -48,7 +48,7 @@ const sendEmail = async (to, otp) => {
     console.log("Email sent successfully:", info.response);
 
   } catch (err) {
-    console.error("Failed to send OTP email:", err.message);
+    console.error("Failed to OTP send email:", err.message);
     throw new Error("Failed to otp send email"); // so backend knows
   }
 };
