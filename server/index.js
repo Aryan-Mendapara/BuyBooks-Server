@@ -9,12 +9,9 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://buy-books-twpo.vercel.app"
-  ],
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type","Authorization"],
+  origin: ["http://localhost:5173", "https://buybooks-client.vercel.app"], // allowed origins
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
 }));
 
 app.use(express.json());
