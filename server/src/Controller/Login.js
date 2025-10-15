@@ -6,53 +6,40 @@ const addLogin = async (req, res) => {
   try {
     console.log("Backend addLogin called");
     const { email, mobileno } = req.body;
-    console.log("Request Body:", req.body);
 
     if (!email || !mobileno) {
       return res.status(400).json({ message: "Email and Mobile are required" });
     }
 
-    // Convert mobile number to number if needed
     const mobileNum = Number(mobileno);
     if (isNaN(mobileNum)) {
       return res.status(400).json({ message: "Invalid mobile number" });
     }
 
     let user = await Login.findOne({ email });
-    console.log("Found User:", user);
 
     if (!user) {
-      // Auto-create user
-      user = new Login({
-        email,
-        mobileno: mobileNum,
-        password: null, // or generate random hashed password if needed
-      });
+      user = new Login({ email, mobileno: mobileNum });
       await user.save();
-      console.log("User created:", user);
+      console.log("New user created:", user.email);
     }
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.otp = otp;
-    user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes
+    user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 min
     await user.save();
-    console.log("Generated OTP:", otp);    
 
-    // Send OTP email safely
-    try {
-      await sendEmail(email, otp); 
-      console.log("OTP sent to email");
-    } catch (emailErr) {
-      console.error("Failed to send OTP email:", emailErr.message);
-      return res.status(500).json({ message: "Failed to send OTP email" });
-    }
+    console.log("Generated OTP:", otp);
 
-    return res.status(200).json({ message: "OTP sent successfully to email" });
+    // Send OTP email
+    await sendEmail(email, otp);
+
+    res.status(200).json({ message: "OTP sent successfully to email" });
 
   } catch (err) {
     console.error("Login error:", err);
-    return res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message || "Server error" });
   }
 };
 
