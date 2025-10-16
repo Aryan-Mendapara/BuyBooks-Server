@@ -1,3 +1,4 @@
+// src/Controller/Login.js
 const bcrypt = require("bcrypt");
 const Login = require("../Models/Login");
 const sendEmail = require("../Models/sendMail");
@@ -5,6 +6,7 @@ const sendEmail = require("../Models/sendMail");
 const addLogin = async (req, res) => {
   try {
     console.log("Backend addLogin called");
+
     const { email, mobileno } = req.body;
 
     if (!email || !mobileno) {
@@ -16,10 +18,10 @@ const addLogin = async (req, res) => {
       return res.status(400).json({ message: "Invalid mobile number" });
     }
 
+    // Check if user already exists
     let user = await Login.findOne({ email });
-
     if (!user) {
-      user = new Login({ email, mobileno: mobileNum, password  });
+      user = new Login({ email, mobileno: mobileNum });
       await user.save();
       console.log("New user created:", user.email);
     }
@@ -27,46 +29,46 @@ const addLogin = async (req, res) => {
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.otp = otp;
-    user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 min
+    user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes
     await user.save();
 
     console.log("Generated OTP:", otp);
 
-    // Send OTP email
-    await sendEmail(email, otp);
-
-    res.status(200).json({ message: "OTP sent successfully to email" });
+    // Send OTP via Brevo SMTP
+    try {
+      await sendEmail(email, otp);
+      console.log("OTP sent successfully to", email);
+      return res.status(200).json({ message: "OTP sent successfully to email" });
+    } catch (emailError) {
+      console.error("Failed to send OTP email:", emailError.message);
+      return res.status(500).json({ message: "Failed to send OTP email" });
+    }
 
   } catch (err) {
     console.error("Login error:", err.stack || err);
-    res.status(500).json({ message: err.message || "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
 const getLogin = async (req, res) => {
   try {
-    const user = await Login.find()
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({ message: "User fetched successfully", user });
-  } catch (error) {
-    console.error("Get Login User Error:", error);
-    res.status(500).json({ message: "Failed to get user" });
+    const users = await Login.find();
+    return res.status(200).json({ message: "Users fetched successfully", users });
+  } catch (err) {
+    console.error("Get login error:", err);
+    return res.status(500).json({ message: "Failed to get users" });
   }
 };
 
 const deleteLogin = async (req, res) => {
   try {
     const login = await Login.findByIdAndDelete(req.params.id);
-    if (!login)
-      return res.status(404).json({ message: "User Not Found" });
-    res.status(200).json({ message: "Login deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
-    console.log(error);
+    if (!login) return res.status(404).json({ message: "User not found" });
+    return res.status(200).json({ message: "Login deleted successfully" });
+  } catch (err) {
+    console.error("Delete login error:", err);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
-module.exports = { addLogin, deleteLogin, getLogin };
+module.exports = { addLogin, getLogin, deleteLogin };
