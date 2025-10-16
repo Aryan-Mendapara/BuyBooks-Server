@@ -1,30 +1,22 @@
-// src/Models/sendEmail.js
 const nodemailer = require("nodemailer");
-require("dotenv").config();
 
 const sendEmail = async (to, otp) => {
   console.log("📨 Sending OTP email to:", to);
-
   try {
-    // Create transporter using Brevo SMTP
     const transporter = nodemailer.createTransport({
       host: "smtp-relay.brevo.com",
       port: 587,
-      secure: false, // true for 465, false for 587
       auth: {
-        user: process.env.BREVO_EMAIL, // your Brevo email
-        pass: process.env.BREVO_API_KEY, // your Brevo SMTP API key
+        user: process.env.BREVO_EMAIL, // your Brevo login email
+        pass: process.env.BREVO_API_KEY,
       },
     });
-    console.log("BREVO_EMAIL:", process.env.BREVO_EMAIL);
-console.log("BREVO_API_KEY:", process.env.BREVO_API_KEY);
-
 
     const mailOptions = {
       from: `"BuyBooks" <${process.env.BREVO_EMAIL}>`,
       to,
       subject: "Your Login OTP",
-      text: `Your OTP code is: ${otp}`,
+      text: `Your OTP is ${otp}`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -36,3 +28,34 @@ console.log("BREVO_API_KEY:", process.env.BREVO_API_KEY);
 };
 
 module.exports = sendEmail;
+
+// src/Models/sendMail.js
+// require('dotenv').config();
+// const nodemailer = require('nodemailer');
+
+// const sendEmail = async (to, otp) => {
+//   try {
+//     const transporter = nodemailer.createTransport({
+//       service: 'gmail',
+//       auth: {
+//         user: process.env.EMAIL,        // your Gmail address
+//         pass: process.env.EMAIL_PASS,   // App password, NOT your regular Gmail password
+//       },
+//     });
+
+//     const mailOptions = {
+//       from: process.env.EMAIL,
+//       to,
+//       subject: 'Your OTP for BuyBooks',
+//       text: `Your OTP is: ${otp}`,
+//     };
+
+//     await transporter.sendMail(mailOptions);
+//     console.log(`📨 OTP sent successfully to: ${to}`);
+//   } catch (err) {
+//     console.error('❌ Email send failed', err);
+//     throw new Error('Email send failed');
+//   }
+// };
+
+// module.exports = sendEmail;
