@@ -1,61 +1,29 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
+require('dotenv').config();
 
 const sendEmail = async (to, otp) => {
-  console.log("📨 Sending OTP email to:", to);
+  console.log("send Email function called ---->");
+
   try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp-relay.brevo.com",
-      port: 587,
-      auth: {
-        user: process.env.BREVO_EMAIL, // your Brevo login email
-        pass: process.env.BREVO_API_KEY,
-      },
+    let defaultClient = SibApiV3Sdk.ApiClient.instance;
+    let apiKey = defaultClient.authentications['api-key'];
+    apiKey.apiKey = process.env.BREVO_API_KEY;
+
+    let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+    let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail({
+      to: [{ email: to }],
+      sender: { email: process.env.BREVO_EMAIL, name: "BuyBooks" },
+      subject: "Your Login OTP",
+      textContent: `Your OTP code is ${otp}`,
     });
 
-    const mailOptions = {
-      from: `"BuyBooks" <${process.env.BREVO_EMAIL}>`,
-      to,
-      subject: "Your Login OTP",
-      text: `Your OTP is ${otp}`,
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log("✅ OTP email sent successfully");
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    console.log("Email sent successfully via Brevo!");
   } catch (error) {
-    console.error("❌ Failed to send OTP email:", error.message);
+    console.error("Email send failed:", error);
     throw new Error("Email send failed");
   }
 };
 
 module.exports = sendEmail;
-
-// src/Models/sendMail.js
-// require('dotenv').config();
-// const nodemailer = require('nodemailer');
-
-// const sendEmail = async (to, otp) => {
-//   try {
-//     const transporter = nodemailer.createTransport({
-//       service: 'gmail',
-//       auth: {
-//         user: process.env.EMAIL,        // your Gmail address
-//         pass: process.env.EMAIL_PASS,   // App password, NOT your regular Gmail password
-//       },
-//     });
-
-//     const mailOptions = {
-//       from: process.env.EMAIL,
-//       to,
-//       subject: 'Your OTP for BuyBooks',
-//       text: `Your OTP is: ${otp}`,
-//     };
-
-//     await transporter.sendMail(mailOptions);
-//     console.log(`📨 OTP sent successfully to: ${to}`);
-//   } catch (err) {
-//     console.error('❌ Email send failed', err);
-//     throw new Error('Email send failed');
-//   }
-// };
-
-// module.exports = sendEmail;
