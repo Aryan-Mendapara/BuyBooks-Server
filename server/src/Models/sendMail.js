@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const sendEmail = async (to, otp) => {
-  console.log("send Email function called");
+  console.log("send Email function called ---->");
 
   try {
     const transporter = nodemailer.createTransport({
