@@ -1,35 +1,36 @@
-const axios = require("axios");
+// src/Models/sendEmail.js
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const sendEmail = async (to, otp) => {
   console.log("📨 Sending OTP email to:", to);
 
   try {
-    const data = {
-      sender: { email: process.env.BREVO_EMAIL, name: "BuyBooks" },
-      to: [{ email: to }],
+    // Create transporter using Brevo SMTP
+    const transporter = nodemailer.createTransport({
+      host: "smtp-relay.brevo.com",
+      port: 587,
+      secure: false, // true for 465, false for 587
+      auth: {
+        user: process.env.BREVO_EMAIL, // your Brevo email
+        pass: process.env.BREVO_API_KEY, // your Brevo SMTP API key
+      },
+    });
+    console.log("BREVO_EMAIL:", process.env.BREVO_EMAIL);
+console.log("BREVO_API_KEY:", process.env.BREVO_API_KEY);
+
+
+    const mailOptions = {
+      from: `"BuyBooks" <${process.env.BREVO_EMAIL}>`,
+      to,
       subject: "Your Login OTP",
-      textContent: `Your OTP code is: ${otp}`,
+      text: `Your OTP code is: ${otp}`,
     };
 
-    const apiKey = process.env.BREVO_API_KEY?.trim(); // remove spaces
-    if (!apiKey) throw new Error("Brevo API key not found in environment");
-
-    const response = await axios.post(
-      "https://api.brevo.com/v3/smtp/email",
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "api-key": apiKey, // Must be exact header name
-        },
-      }
-    );
-
-    console.log("✅ OTP email sent successfully via Brevo!");
-    return response.data;
+    await transporter.sendMail(mailOptions);
+    console.log("✅ OTP email sent successfully");
   } catch (error) {
-    console.error("❌ Failed to send OTP email:", error.response?.data || error.message);
+    console.error("❌ Failed to send OTP email:", error.message);
     throw new Error("Email send failed");
   }
 };
