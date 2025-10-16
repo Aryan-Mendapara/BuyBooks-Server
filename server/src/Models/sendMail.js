@@ -12,13 +12,16 @@ const sendEmail = async (to, otp) => {
       textContent: `Your OTP code is: ${otp}`,
     };
 
+    const apiKey = process.env.BREVO_API_KEY?.trim(); // remove spaces
+    if (!apiKey) throw new Error("Brevo API key not found in environment");
+
     const response = await axios.post(
       "https://api.brevo.com/v3/smtp/email",
       data,
       {
         headers: {
           "Content-Type": "application/json",
-          "api-key": process.env.BREVO_API_KEY,
+          "api-key": apiKey, // Must be exact header name
         },
       }
     );
