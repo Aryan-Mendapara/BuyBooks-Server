@@ -19,7 +19,7 @@ const addLogin = async (req, res) => {
     let user = await Login.findOne({ email });
 
     if (!user) {
-      user = new Login({ email, mobileno: mobileNum });
+      user = new Login({ email, mobileno: mobileNum, password  });
       await user.save();
       console.log("New user created:", user.email);
     }
