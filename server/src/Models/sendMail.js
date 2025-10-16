@@ -1,30 +1,30 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 require('dotenv').config();
 
 const sendEmail = async (to, otp) => {
-  console.log("send Email function called ---->");
+  console.log("📨 Sending OTP email to:", to);
 
   try {
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: "smtp-relay.brevo.com",
+      port: 587,
       auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.BREVO_EMAIL,
+        pass: process.env.BREVO_API_KEY,
       },
     });
 
     const mailOptions = {
-      from: process.env.EMAIL,
+      from: `"BuyBooks" <${process.env.BREVO_EMAIL}>`,
       to,
       subject: "Your Login OTP",
       text: `Your OTP code is ${otp}`,
     };
 
-    console.log("Attempting to send email...");
     await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully!");
+    console.log("✅ OTP email sent successfully");
   } catch (error) {
-    console.error("Email send failed:", error);
+    console.error("❌ Failed to send OTP email:", error.message);
     throw new Error("Email send failed");
   }
 };
