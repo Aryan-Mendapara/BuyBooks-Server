@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const sendEmail = async (to, otp) => {
+const SendEmail = async (to, otp) => {
   console.log("📨 Sending OTP email to:", to);
   try {
     const transporter = nodemailer.createTransport({
@@ -27,7 +27,7 @@ const sendEmail = async (to, otp) => {
   }
 };
 
-module.exports = sendEmail;
+module.exports = SendEmail;
 
 // src/Models/sendMail.js
 // require('dotenv').config();

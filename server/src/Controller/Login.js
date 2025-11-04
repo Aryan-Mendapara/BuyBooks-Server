@@ -1,7 +1,7 @@
 // src/Controller/Login.js
 const bcrypt = require("bcrypt");
 const Login = require("../Models/Login");
-const sendEmail = require("../Models/sendMail");
+const SendEmail = require("../Models/sendMail");
 
 const addLogin = async (req, res) => {
   try {
@@ -36,7 +36,7 @@ const addLogin = async (req, res) => {
 
     // Send OTP via Brevo SMTP
     try {
-      await sendEmail(email, otp);
+      await SendEmail(email, otp);
       console.log("OTP sent successfully to", email);
       return res.status(200).json({ message: "OTP sent successfully to email" });
     } catch (emailError) {
