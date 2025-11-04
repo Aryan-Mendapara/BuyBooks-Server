@@ -41,7 +41,7 @@ const addLogin = async (req, res) => {
       return res.status(200).json({ message: "OTP sent successfully to email" });
     } catch (emailError) {
       console.error("Failed to send OTP email:", emailError.message);
-      return res.status(500).json({ message: "Failed to send OTP email" });
+      return res.status(500).json({ message: "Failed to OTP send email" });
     }
 
   } catch (err) {
