@@ -11,9 +11,9 @@ const SendEmail = async (to, otp) => {
     );
 
     const emailData = {
-      sender: { email: process.env.BREVO_EMAIL, name: "BuyBooks" },
+      sender: { email: process.env.BREVO_EMAIL, name: "Buy Books" },
       to: [{ email: to }],
-      subject: "Buy Books",
+      subject: "Your Login OTP",
       textContent: `Your OTP is ${otp}`,
     };
 
