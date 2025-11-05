@@ -15,7 +15,7 @@ const createBooks = async (req, res) => {
 
     // If image file uploaded, generate full image URL
     const image = req.file
-      ? `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+      ? `${req.protocol}s://${req.get("host")}/uploads/${req.file.filename}`
       : null;
 
     console.log("📦 Form data received:", req.body);
