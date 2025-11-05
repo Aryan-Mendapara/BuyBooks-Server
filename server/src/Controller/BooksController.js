@@ -14,8 +14,10 @@ const createBooks = async (req, res) => {
 		} = req.body;
 
 		// If image file uploaded, generate full image URL
+		const protocol = req.protocol === 'https' ? 'https' : 'https'; // Force https always
+		const host = req.get('host');
 		const image = req.file
-			? `https://${req.get('host')}/uploads/${req.file.filename}`
+			? `${protocol}://${host}/uploads/${req.file.filename}`
 			: null;
 
 
