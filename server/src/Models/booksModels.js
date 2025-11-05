@@ -1,6 +1,6 @@
-const mongooes = require('mongoose');
+const mongoose = require('mongoose');
 
-const booksSchema = new mongooes.Schema({
+const booksSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -37,6 +37,6 @@ const booksSchema = new mongooes.Schema({
     }
 })
 
-const Image = mongooes.model("Image", booksSchema);
+const Image = mongoose.model("Image", booksSchema);
 
 module.exports = { Image }
