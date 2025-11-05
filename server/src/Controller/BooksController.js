@@ -3,7 +3,7 @@ const { Image } = require("../Models/booksModels");
 const createBooks = async (req, res) => {
 	try {
 		const { title, author, Publisher, price, originalPrice, discount, category } = req.body;
-		const image = req.file ? req.file.path : null
+		const image = req.file ? req.file.path.replace(/\\/g, "/") : null;
 		console.log("Form data received:", req.body);
 		const newBooks = new Image({
 			title,
