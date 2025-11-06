@@ -2,25 +2,26 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
-// ✅ Define uploads directory relative to root (not inside src/)
-const uploadDir = path.join(__dirname, "../../uploads");
+// Define the uploads directory (absolute path)
+const uploadDir = path.join(__dirname, "../uploads");
 
-// ✅ Ensure the uploads folder exists
+// Create the uploads folder if it doesn’t exist
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
   console.log("✅ 'uploads' folder created at:", uploadDir);
 }
 
-// ✅ Configure Multer storage
+// Configure Multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDir);
+    cb(null, uploadDir); // use the absolute path
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
+// Initialize the multer instance
 const uploads = multer({ storage });
 
 module.exports = uploads;
