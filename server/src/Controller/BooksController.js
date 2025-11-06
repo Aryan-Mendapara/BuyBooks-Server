@@ -5,6 +5,7 @@ const createBooks = async (req, res) => {
 		const { title, author, Publisher, price, originalPrice, discount, category } = req.body;
 		const image = req.file ? `uploads/${req.file.filename}` : null;
 		console.log("Form data received:", req.body);
+		
 		const newBooks = new Image({
 			title,
 			author,
