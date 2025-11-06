@@ -1,32 +1,42 @@
-const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
+const multer = require('multer');
 
-// ✅ 1. Define uploads directory (absolute path)
-// On Render: __dirname is /opt/render/project/src/server/src
-const uploadDir = path.join(__dirname, "../uploads");
-
-// ✅ 2. Create the uploads folder if it doesn’t exist
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-  console.log("✅ 'uploads' folder created at:", uploadDir);
-} else {
-  console.log("📁 Using existing uploads folder:", uploadDir);
-}
-
-// ✅ 3. Configure Multer storage
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir); // absolute path
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + file.originalname;
-    cb(null, uniqueName);
-  },
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null,Date.now() + '-' + file.originalname)
+    },
 });
 
-// ✅ 4. Initialize Multer instance
 const uploads = multer({ storage });
 
-// ✅ 5. Export for routes
-module.exports = uploads;
+module.exports = uploads
+
+// const multer = require("multer");
+// const fs = require("fs");
+// const path = require("path");
+
+// // Define the uploads directory (absolute path)
+// const uploadDir = path.join(__dirname, "../uploads");
+
+// // Create the uploads folder if it doesn’t exist
+// if (!fs.existsSync(uploadDir)) {
+//   fs.mkdirSync(uploadDir, { recursive: true });
+//   console.log("✅ 'uploads' folder created at:", uploadDir);
+// }
+
+// // Configure Multer storage
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, uploadDir); // use the absolute path
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + "-" + file.originalname);
+//   },
+// });
+
+// // Initialize the multer instance
+// const uploads = multer({ storage });
+
+// module.exports = uploads;
