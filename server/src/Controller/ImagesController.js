@@ -1,4 +1,4 @@
-const { Image } = require("../Models/booksModels");
+const { Image } = require("../Models/imagesModels");
 
 const createBooks = async (req, res) => {
 	try {

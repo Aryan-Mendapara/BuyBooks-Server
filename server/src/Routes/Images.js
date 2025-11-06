@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const uploads = require("../Middleware/multerStorage");
-const { createBooks, getBooks, deleteBooks } = require("../Controller/BooksController");
+const { createBooks, getBooks, deleteBooks } = require("../Controller/ImagesController");
 
 router.post('/import', uploads.single('image'), createBooks);
 router.get('/get', getBooks);
