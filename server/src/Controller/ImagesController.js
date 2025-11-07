@@ -1,31 +1,41 @@
 const { Image } = require("../Models/imagesModels");
 
 const createBooks = async (req, res) => {
-	try {
-		const { title, author, Publisher, price, originalPrice, discount, category } = req.body;
-		
-		const image = req.file ? req.file.path : null
-		console.log("Form data received:", req.body);
-		
-		const newBooks = new Image({
-			title,
-			author,
-			image,
-			Publisher,
-			price,
-			originalPrice,
-			discount,
-			category,
-		});
+  try {
+    console.log("📩 File received:", req.file);
+    console.log("📦 Body received:", req.body);
 
-		await newBooks.save();
+    const { title, author, Publisher, price, originalPrice, discount, category } = req.body;
 
-		res.status(201).json({ message: 'Book created successfully', newBooks });
-	} catch (error) {
-		console.error("Create Book Error: ", error);
-		res.status(500).json({ message: 'Failed to create book' });
-	}
+    if (!req.file) {
+      console.log("❌ No image file received");
+      return res.status(400).json({ message: "No image uploaded" });
+    }
+
+    const imageUrl = req.file.path; // Cloudinary gives the URL here
+    console.log("✅ Cloudinary URL:", imageUrl);
+
+    const newBook = new Image({
+      title,
+      author,
+      Publisher,
+      price,
+      originalPrice,
+      discount,
+      category,
+      image: imageUrl,
+    });
+
+    await newBook.save();
+    console.log("✅ Book saved successfully");
+
+    res.status(201).json({ message: "Book created successfully", newBook });
+  } catch (error) {
+    console.error("🔥 Create Book Error:", error);
+    res.status(500).json({ message: "Failed to create book", error: error.message });
+  }
 };
+
 
 const getBooks = async (req, res) => {
 	try {
