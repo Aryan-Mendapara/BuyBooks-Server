@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve images
-app.use("/uploads", express.static(path.join(process.cwd(), "server/src/Middeware/uploads")));
+app.use("/uploads", express.static(path.join(process.cwd(), "server/src/Middleware/uploads")));
 
 app.use("/books", index);
 
