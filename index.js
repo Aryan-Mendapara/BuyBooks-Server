@@ -4,7 +4,7 @@ const dbConnection = require("./src/DBConnection/MongoDBConnection.js");
 const index = require('./src/Routes/main.js');
 const cors = require("cors");
 const path = require('path');
-require('./src/DBConnection/FirebaseConnection.js') // ✅ Firebase Connection
+require('./src/DBConnection/FirebaseConnection.js'); // Firebase Admin SDK
 
 const app = express();
 const port = process.env.PORT || 8000;
