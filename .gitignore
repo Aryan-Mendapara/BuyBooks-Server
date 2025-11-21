@@ -15,7 +15,6 @@ dist-ssr
 uploads
 
 # Credentials and secrets
-server/serviceAccount.json
 serviceAccount.json
 *.json
 
