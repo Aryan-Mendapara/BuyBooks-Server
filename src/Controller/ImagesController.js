@@ -1,11 +1,7 @@
 const { Image } = require("../Models/imagesModels");
-const { bucket } = require("../DBConnection/FirebaseConnection"); // ✅ Correct import
+const { bucket } = require("../DBConnection/firebaseconfig");
 const fs = require("fs");
-const path = require("path");
 
-// ==========================
-// CREATE BOOK (Upload Image)
-// ==========================
 const createBooks = async (req, res) => {
   try {
     console.log("📩 File received:", req.file);
@@ -58,16 +54,11 @@ const createBooks = async (req, res) => {
   }
 };
 
-// ==========================
-// GET BOOKS
-// ==========================
 const getBooks = async (req, res) => {
   try {
     const { category } = req.query;
     const query = category ? { category } : {};
-
     const books = await Image.find(query).sort({ createdAt: -1 });
-
     res.status(200).json({ message: "Books fetched successfully", books });
   } catch (error) {
     console.error("Get Books Error:", error);
@@ -75,13 +66,10 @@ const getBooks = async (req, res) => {
   }
 };
 
-// ==========================
-// DELETE BOOK
-// ==========================
 const deleteBooks = async (req, res) => {
   try {
-    const book = await Image.findByIdAndDelete(req.params.id);
-    if (!book) return res.status(404).json({ message: "Book not found" });
+    const books = await Image.findByIdAndDelete(req.params.id);
+    if (!books) return res.status(404).json({ message: "Book not found" });
 
     res.status(200).json({ message: "Book deleted successfully" });
   } catch (error) {
