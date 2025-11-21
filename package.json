@@ -1,0 +1,13 @@
+{
+  "name": "buybooks-root",
+  "private": true,
+  "version": "1.0.0",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "postinstall": "npm install --prefix server",
+    "start": "npm start --prefix server"
+  }
+}
