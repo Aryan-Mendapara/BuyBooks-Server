@@ -16,8 +16,6 @@ uploads
 
 # Credentials and secrets
 serviceAccount.json
-*.json
-
 
 # Editor directories and files
 .vscode/*
