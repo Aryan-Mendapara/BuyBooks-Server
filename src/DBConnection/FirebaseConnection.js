@@ -1,18 +1,21 @@
 const admin = require("firebase-admin");
-const fs = require("fs");
-const path = require("path");
 const dotenv = require("dotenv");
 
 dotenv.config();
 
-const serviceAccountPath = path.resolve("serviceAccount.json");
-
-if (!fs.existsSync(serviceAccountPath)) {
-  console.error("❌ Firebase service account file not found!");
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  console.error("❌ FIREBASE_SERVICE_ACCOUNT ENV not found!");
   process.exit(1);
 }
 
-const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
+let serviceAccount;
+
+try {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} catch (err) {
+  console.error("❌ Invalid FIREBASE_SERVICE_ACCOUNT JSON");
+  process.exit(1);
+}
 
 if (!admin.apps.length) {
   try {
