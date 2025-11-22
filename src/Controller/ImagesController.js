@@ -68,14 +68,19 @@ const getBooks = async (req, res) => {
 
 const deleteBooks = async (req, res) => {
   try {
-    const books = await Image.findByIdAndDelete(req.params.id);
-    if (!books) return res.status(404).json({ message: "Book not found" });
+    const book = await Image.findByIdAndDelete(req.params.id);
+    if (!book) return res.status(404).json({ message: "Book not found" });
+
+    // Delete image from Firebase
+    const firebasePath = book.image.split(`https://storage.googleapis.com/${bucket.name}/`)[1];
+    if (firebasePath) await bucket.file(firebasePath).delete();
 
     res.status(200).json({ message: "Book deleted successfully" });
   } catch (error) {
     console.error("Delete Books Error:", error);
-    res.status(500).json({ message: "Failed to delete book" });
+    res.status(500).json({ message: "Failed to delete book", error: error.message });
   }
 };
+
 
 module.exports = { createBooks, getBooks, deleteBooks };
