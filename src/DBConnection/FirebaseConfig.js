@@ -10,7 +10,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyBp363TXQRM0P34K27lVCztOx3fBuZErDU",
   authDomain: "buybooks-455e6.firebaseapp.com",
   projectId: "buybooks-455e6",
-  storageBucket: "buybooks-455e6.appsport.app",
+  storageBucket: "buybooks-455e6.firebasestorage.app",
   messagingSenderId: "47181389913",
   appId: "1:47181389913:web:94633c3a4445472d2f1148",
   measurementId: "G-D7PL7LSMD4"
