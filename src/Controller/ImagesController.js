@@ -1,5 +1,5 @@
+const { bucket } = require("../DBConnection/FirebaseConnection");
 const { Image } = require("../Models/imagesModels");
-const { bucket } = require("../DBConnection/firebaseconfig");
 const fs = require("fs");
 
 const createBooks = async (req, res) => {
