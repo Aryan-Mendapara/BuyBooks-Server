@@ -66,50 +66,46 @@
 
 // module.exports = uploads;
 
-import express from "express";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
+const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const router = express.Router();
 
-// ---------- MULTER STORAGE ----------
+// Storage
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const uploadPath = "uploads/";
-
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
-
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + "-" + file.originalname);
+  destination: function (req, file, cb) {
+    const uploadPath = "uploads/";
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
     }
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
 });
 
 const upload = multer({ storage });
 
-// ---------- POST ROUTE ----------
+// POST Route
 router.post("/images/import", upload.single("image"), (req, res) => {
-
-    try {
-        if (!req.file) {
-            return res.status(400).json({ message: "No file uploaded" });
-        }
-
-        const filePath = `/uploads/${req.file.filename}`;
-
-        return res.status(200).json({
-            message: "Image uploaded successfully",
-            imageUrl: filePath
-        });
-
-    } catch (error) {
-        console.log("Upload error:", error);
-        return res.status(500).json({ message: "Server error", error });
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
     }
+
+    const filePath = `/uploads/${req.file.filename}`;
+
+    res.status(200).json({
+      message: "Image uploaded successfully",
+      imageUrl: filePath
+    });
+  } catch (error) {
+    console.log("Upload error:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
 });
 
-export default router;
+module.exports = router;
