@@ -4,55 +4,37 @@ const fs = require("fs");
 
 const createBooks = async (req, res) => {
   try {
-    console.log("📩 File received:", req.file);
-    console.log("📦 Body received:", req.body);
+    if (!req.file) return res.status(400).json({ message: "No image uploaded" });
 
     const { title, author, Publisher, price, originalPrice, discount, category } = req.body;
 
-    if (!req.file) {
-      return res.status(400).json({ message: "No image uploaded" });
+    if (!title || !price || !originalPrice || !discount || !category) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Upload image to Firebase bucket
-    const localFilePath = req.file.path;
-    const firebaseFileName = `books/${Date.now()}-${req.file.originalname}`;
-    const firebaseFile = bucket.file(firebaseFileName);
-
-    await firebaseFile.save(fs.readFileSync(localFilePath), {
-      metadata: { contentType: req.file.mimetype },
-    });
-
-    // Make file public
+    // Upload to Firebase
+    const localFile = req.file.path;
+    const firebaseFile = bucket.file(`books/${Date.now()}-${req.file.originalname}`);
+    await firebaseFile.save(fs.readFileSync(localFile), { metadata: { contentType: req.file.mimetype } });
     await firebaseFile.makePublic();
 
-    // Public Firebase URL
-    const imageUrl = `https://storage.googleapis.com/${bucket.name}/${firebaseFileName}`;
+    const imageUrl = `https://storage.googleapis.com/${bucket.name}/${firebaseFile.name}`;
 
-    console.log("✅ Firebase Image URL:", imageUrl);
-
-    // Save book
     const newBook = new Image({
-      title,
-      author,
-      Publisher,
-      price,
-      originalPrice,
-      discount,
-      category,
-      image: imageUrl,
+      title, author, Publisher, price, originalPrice, discount, category, image: imageUrl
     });
 
     await newBook.save();
+    fs.unlinkSync(localFile); // remove local file
 
-    // Delete local upload
-    fs.unlinkSync(localFilePath);
-
-    res.status(201).json({ message: "Book created successfully", newBook });
-  } catch (error) {
-    console.error("🔥 Create Book Error:", error);
-    res.status(500).json({ message: "Failed to create book", error: error.message });
+    res.status(201).json({ message: "Book created", newBook });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+
 
 const getBooks = async (req, res) => {
   try {

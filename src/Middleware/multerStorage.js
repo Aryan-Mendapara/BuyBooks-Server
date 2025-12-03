@@ -66,25 +66,20 @@
 
 // module.exports = uploads;
 
-// CommonJS version
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
-const uploadDir = path.join(__dirname, "../uploads");
+// Upload folder
+const uploadDir = path.join(__dirname, "../../uploads");
 
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-    console.log("📁 Created uploads folder:", uploadDir);
-}
+// Create folder if missing
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
+// Multer storage
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadDir);
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + "-" + file.originalname);
-    }
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
 
 const uploads = multer({ storage });
