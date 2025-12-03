@@ -9,9 +9,9 @@ const createBooks = async (req, res) => {
 
     const { title, author, Publisher, price, originalPrice, discount, category } = req.body;
 
-    if (!req.file) {
-      return res.status(400).json({ message: "No image uploaded" });
-    }
+    // if (!req.file) {
+    //   return res.status(400).json({ message: "No image uploaded" });
+    // }
 
     // Upload image to Firebase bucket
     const localFilePath = req.file.path;
